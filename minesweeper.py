@@ -1,8 +1,8 @@
 import sys
 from random import shuffle
 from PyQt5 import QtCore, QtWidgets, QtGui
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
+from PyQt5.QtCore import QRect, QMetaObject, QCoreApplication, QEvent, Qt, QSize
+from PyQt5.QtWidgets import QPushButton, QMessageBox, QMainWindow
 
 difficulty = {
     "easy": {"row": 9, "column": 9, "mines": 10},
@@ -12,8 +12,8 @@ difficulty = {
 
 
 class Button(QPushButton):
-    def __init__(self, x, y, number=0, *args, **kwargs):
-        super(Button, self).__init__(*args, **kwargs)
+    def __init__(self, x, y, number=0, *args):
+        super(Button, self).__init__(*args)
         self.opened = 0
         self.id = number
         self.x = x
@@ -403,10 +403,13 @@ class Ui_MainWindow(QtWidgets.QMainWindow):
         win = QMessageBox()
         win.setWindowTitle("Victory")
         win.setText("Congratulations")
+        change_difficulty = win.addButton('Change difficulty', QMessageBox.ActionRole)
         win.setStandardButtons(QMessageBox.Cancel | QMessageBox.Retry)
         win.rejected.connect(lambda: sys.exit(0))
         win.accepted.connect(self.restart)
         win.exec_()
+        if win.clickedButton() == change_difficulty:
+            self.change_difficulty()
 
     def change_difficulty(self):
         Ui_difficulty()
